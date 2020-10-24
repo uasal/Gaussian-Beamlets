@@ -174,10 +174,11 @@ class Rayfront():
                     _log.info("phase cube shape:"+str(phase.shape))
                     _log.info(phase.max())
                     _log.info(Qprop)
-                    _log.info(orig_matrix)
+                    _log.info("Q"+str(A))
+                    _log.info("orig_matrix"+str(orig_matrix))
                     _log.info("cros"+str(cros_matrix))
                     _log.info("A"+str(A))
-                    _log.info("crosB"+str(B))
+                    _log.info("B"+str(B))
                     _log.info(u)
                     _log.info(v)
 
