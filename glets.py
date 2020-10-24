@@ -31,12 +31,12 @@ class Rayfront():
         self.samplescheme = samplescheme
         
         # These parameters need to change with different aperture scales (figure out later)
-        self.OF = 2
-        self.wo = 5*self.wavelength
+        self.OF = 2.0
+        self.wo = 5.0*self.wavelength
         zr = np.pi*self.wo**2.0/self.wavelength
         
-        self.Q = np.array([[1.0/(1j*zr),0],
-                           [0,1.0/(1j*zr)]],dtype='complex')
+        self.Q = np.array([[1.0/(1.0j*zr),0.0],
+                           [0.0,1.0/(1.0j*zr)]],dtype='complex')
         
         if self.samplescheme == 'fibbonacci':
             
@@ -157,7 +157,7 @@ class Rayfront():
                     v = staged_element['yarray']
                     
                     Dphase = np.zeros([len(u[0,:]),len(u[0,:]),self.numrays],dtype='complex')
-                    
+
                     phase = self.PhaseCube(self.wavelength,
                                            sys,
                                            Qprop,
@@ -170,9 +170,16 @@ class Rayfront():
                                            u,
                                            v,
                                            Dphase)
+                    
                     _log.info("phase cube shape:"+str(phase.shape))
                     _log.info(phase.max())
-                    _log.info([Qprop,orig_matrix,cros_matrix,u,v])
+                    _log.info(Qprop)
+                    _log.info(orig_matrix)
+                    _log.info("cros"+str(cros_matrix))
+                    _log.info("A"+str(A))
+                    _log.info("crosB"+str(B))
+                    _log.info(u)
+                    _log.info(v)
 
                     phasor = ne.evaluate('exp(phase)')
                     self.Ephase = np.sum(phasor,axis=2)*np.sqrt(np.linalg.det(A+np.matmul(B,self.Q)))
