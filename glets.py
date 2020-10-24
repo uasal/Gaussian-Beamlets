@@ -172,6 +172,7 @@ class Rayfront():
                                            Dphase)
                     _log.info("phase cube shape:"+str(phase.shape))
                     _log.info(phase.max())
+                    _log.info([Qprop,orig_matrix,cros_matrix,u,v])
 
                     phasor = ne.evaluate('exp(phase)')
                     self.Ephase = np.sum(phasor,axis=2)*np.sqrt(np.linalg.det(A+np.matmul(B,self.Q)))
