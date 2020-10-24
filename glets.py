@@ -7,9 +7,17 @@ import timeit
 import astropy.units as u
 from scipy.special import erfc
 from numba import jit
-from numpy.fft import fft
+#from numpy.fft import fft
 import sys
-import poppy
+#import poppy
+
+import logging
+
+_log = logging.getLogger('poppy')
+
+
+def _exp(x):
+    return ne.evaluate("exp(x)")
 
 class Rayfront():
     
@@ -33,7 +41,7 @@ class Rayfront():
         if self.samplescheme == 'fibbonacci':
             
             self.numrays = np.int(np.round(np.pi*((self.size/2.0)*self.OF/(self.wo))*9.0)) # This is arbitrary scaling
-            print('numbeamlets across grid = ',self.numrays)
+            _log.info('numbeamlets across grid = '+str(self.numrays))
             
             if self.numrays >= 1500:
                 print('JAREN STOP BREAKING YOUR COMPUTER DEAR LORD')
@@ -49,7 +57,7 @@ class Rayfront():
         elif self.samplescheme == 'even':
             
             self.numrays = np.int(np.round(self.size*self.OF/(2*self.wo)))
-            print('numbeamlets across grid = ',self.numrays)
+            _log.info('numbeamlets across grid = ',self.numrays)
             
             if self.numrays >= 1500:
                 print('JAREN STOP BREAKING YOUR COMPUTER DEAR LORD')
@@ -123,7 +131,6 @@ class Rayfront():
                     self.rays = np.matmul(sys,self.baserays)
                     
                     print('Evaluating Rayfront')
-                    
                     # Optical system sub-matrices
                     A = sys[0:2,0:2] # this has a tendency to be zero-valued at focus
                     B = sys[0:2,2:4]
@@ -163,10 +170,13 @@ class Rayfront():
                                            u,
                                            v,
                                            Dphase)
-                    
+                    _log.info("phase cube shape:"+str(phase.shape))
+                    _log.info(phase.max())
+
                     phasor = ne.evaluate('exp(phase)')
                     self.Ephase = np.sum(phasor,axis=2)*np.sqrt(np.linalg.det(A+np.matmul(B,self.Q)))
-    
+                    _log.info(self.Ephase.max())
+                    
     @staticmethod
     @jit(nopython=True,parallel=True)
     def PhaseCube(wavelength,
