@@ -15,7 +15,7 @@ import logging
 
 _log = logging.getLogger('poppy')
 
-
+import copy
 def _exp(x):
     return ne.evaluate("exp(x)")
 
@@ -37,7 +37,8 @@ class Rayfront():
         
         self.Q = np.array([[1.0/(1.0j*zr),0.0],
                            [0.0,1.0/(1.0j*zr)]],dtype='complex')
-        
+        _log.info('initial Q'+str(self.Q))
+
         if self.samplescheme == 'fibbonacci':
             
             self.numrays = np.int(np.round(np.pi*((self.size/2.0)*self.OF/(self.wo))*9.0)) # This is arbitrary scaling
@@ -144,10 +145,13 @@ class Rayfront():
                     
                     # toss phase from decenter parameter due to singular A matrix
                     # This is more of a band-aid than anything, solve Collins Integral to actually get the answer
+                    _log.info("det(A):"+str(np.linalg.det(A)))
                     if np.linalg.det(A) == 0:
-                        
+                        _log.info("det(A):"+str(np.linalg.det(A)))
+                        _log.info("Q:"+str(self.Q))
                         orig_matrix = self.Q
-                        
+                        _log.info("origmatrix =Q:"+str(orig_matrix))
+
                     else:
                         orig_matrix = np.linalg.inv(self.Q + np.matmul(np.linalg.inv(A),B))
                         
@@ -170,7 +174,7 @@ class Rayfront():
                                            u,
                                            v,
                                            Dphase)
-                    
+
                     _log.info("phase cube shape:"+str(phase.shape))
                     _log.info(phase.max())
                     _log.info(Qprop)
