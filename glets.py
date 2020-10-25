@@ -146,14 +146,14 @@ class Rayfront():
                     # toss phase from decenter parameter due to singular A matrix
                     # This is more of a band-aid than anything, solve Collins Integral to actually get the answer
                     _log.info("det(A):"+str(np.linalg.det(A)))
-                    if np.linalg.det(A) == 0:
+                    
+                    if False:
                         _log.info("det(A):"+str(np.linalg.det(A)))
                         _log.info("Q:"+str(self.Q))
                         orig_matrix = self.Q
                         _log.info("origmatrix =Q:"+str(orig_matrix))
-
                     else:
-                        orig_matrix = np.linalg.inv(self.Q + np.matmul(np.linalg.inv(A),B))
+                        orig_matrix = np.zeros([2,2])# np.linalg.inv(self.Q + np.matmul(np.linalg.inv(A),B))
                         
                     cros_matrix = np.linalg.inv(np.matmul(A,self.Q)+B)
                     
